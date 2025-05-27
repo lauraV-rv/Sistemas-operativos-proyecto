@@ -2,6 +2,6 @@
 
 Integrantes:
 
-Katherine Valens
-Daniel Castro 
+Katherine Valens,
+Daniel Castro,
 Laura Revelo 
