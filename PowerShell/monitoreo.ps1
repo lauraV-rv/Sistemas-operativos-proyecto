@@ -1,8 +1,8 @@
 function Mostrar-Menu {
     Write-Host "=== MENU - HERRAMIENTA DE MONITOREO ==="
-    Write-Host "1. Mostrar los 5 procesos que m�s CPU consumen"
-    Write-Host "2. Mostrar discos conectados (tama�o y espacio libre)"
-    Write-Host "3. Mostrar archivo m�s grande en un disco especificado"
+    Write-Host "1. Mostrar los 5 procesos que mas CPU consumen"
+    Write-Host "2. Mostrar discos conectados (tamano y espacio libre)"
+    Write-Host "3. Mostrar archivo mas grande en un disco especificado"
     Write-Host "4. Mostrar memoria libre y uso de swap"
     Write-Host "5. Mostrar conexiones de red activas (ESTABLISHED)"
 }
@@ -23,7 +23,7 @@ function Mostrar-Discos {
     Get-PSDrive -PSProvider FileSystem | ForEach-Object {
         [PSCustomObject]@{
             'Unidad'       = $_.Name
-            'Tama�o total' = $_.Used + $_.Free
+            'Tamano total' = $_.Used + $_.Free
             'Espacio libre'= $_.Free
         }
     } | Format-Table -AutoSize
@@ -32,24 +32,24 @@ function Mostrar-Discos {
 function Mostrar-ArchivoMasGrande {
     $unidad = Read-Host "Ingrese la letra de la unidad (por ejemplo C:\ o D:\)"
     if (Test-Path $unidad) {
-        Write-Host "`nBuscando el archivo m�s grande en $unidad ..."
+        Write-Host "`nBuscando el archivo mas grande en $unidad ..."
         $archivo = Get-ChildItem -Path $unidad -Recurse -File -ErrorAction SilentlyContinue |
                    Sort-Object Length -Descending |
                    Select-Object -First 1 FullName, Length
         if ($archivo) {
-            Write-Host "Archivo m�s grande encontrado:"
+            Write-Host "Archivo mas grande encontrado:"
             Write-Host "Ruta: $($archivo.FullName)"
-            Write-Host "Tama�o (bytes): $($archivo.Length)"
+            Write-Host "Tamano (bytes): $($archivo.Length)"
         } else {
             Write-Host "No se encontraron archivos en la unidad especificada."
         }
     } else {
-        Write-Host "Ruta no v�lida. Intente nuevamente."
+        Write-Host "Ruta no valida. Intente nuevamente."
     }
 }
 
 function Mostrar-MemoriaYSwap {
-    Write-Host "`nInformaci�n de memoria y uso de swap:"
+    Write-Host "`nInformacion de memoria y uso de swap:"
     $osInfo = Get-CimInstance Win32_OperatingSystem
     $memLibre = [math]::Round($osInfo.FreePhysicalMemory * 1024)
     $swapEnUso = [math]::Round(($osInfo.TotalVirtualMemorySize - $osInfo.FreeVirtualMemory) * 1024)
@@ -64,20 +64,20 @@ function Mostrar-MemoriaYSwap {
 function Mostrar-ConexionesActivas {
     Write-Host "`nConexiones de red activas (ESTABLISHED):"
     $establecidas = (Get-NetTCPConnection | Where-Object { $_.State -eq "Established" }).Count
-    Write-Host "N�mero de conexiones ESTABLISHED: $establecidas"
+    Write-Host "Numero de conexiones ESTABLISHED: $establecidas"
 }
 
 # Programa principal
 do {
     Mostrar-Menu
-    $opcion = Read-Host "Seleccione una opci�n"
+    $opcion = Read-Host "Seleccione una opcion"
     switch ($opcion) {
         "1" { Mostrar-ProcesosCPU }
         "2" { Mostrar-Discos }
         "3" { Mostrar-ArchivoMasGrande }
         "4" { Mostrar-MemoriaYSwap }
         "5" { Mostrar-ConexionesActivas }
-        default { Write-Host "Opci�n inv�lida`n" }
+        default { Write-Host "Opcion invalida`n" }
     }
     Write-Host ""
 } while ($true)
