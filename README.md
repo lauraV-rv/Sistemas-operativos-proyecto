@@ -2,6 +2,6 @@
 
 Integrantes:
 
-Katherine Valens,
-Daniel Castro,
-Laura Revelo 
+Katerine Valens Orejuela,
+Daniel Castro Escobar,
+Laura Revelo Villarreal
