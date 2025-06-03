@@ -1,11 +1,43 @@
+<#
+.SYNOPSIS
+Herramienta de monitoreo para administradores de data center.
+
+.DESCRIPTION
+Este script de PowerShell permite al usuario seleccionar entre varias opciones 
+de monitoreo del sistema como procesos por CPU, discos, archivos grandes, memoria/swap 
+y conexiones activas.
+
+.PARAMETER Opcion
+Permite ejecutar una opción específica (1 a 5) directamente desde línea de comandos sin 
+interactuar de manera iterativa con el menú.
+
+.EXAMPLE
+.\monitoreo.ps1
+Muestra el menú interactivo.
+
+.EXAMPLE
+.\monitoreo.ps1 -Opcion 3
+Ejecuta directamente la opción 3 (archivo más grande en un disco especificado).
+#>
+
+[CmdletBinding()]
+param (
+    [ValidateSet('1','2','3','4','5')]
+    [string]$Opcion
+)
+
+# Esta sección del script muestra el menú de la herramienta de administración, con sus correspondientes opciones disponibles
+
 function Mostrar-Menu {
-    Write-Host "=== MENU - HERRAMIENTA DE MONITOREO ==="
+    Write-Host "=== MENU: HERRAMIENTA DE MONITOREO DE DATA CENTERS ==="
     Write-Host "1. Mostrar los 5 procesos que mas CPU consumen"
-    Write-Host "2. Mostrar discos conectados (tamano y espacio libre)"
+    Write-Host "2. Mostrar discos conectados (tamaño y espacio libre)"
     Write-Host "3. Mostrar archivo mas grande en un disco especificado"
     Write-Host "4. Mostrar memoria libre y uso de swap"
     Write-Host "5. Mostrar conexiones de red activas (ESTABLISHED)"
 }
+
+# Función 1: Muestra los 5 procesos que más recursos de CPU están consumiendo en el sistema
 
 function Mostrar-ProcesosCPU {
     Write-Host "`nTop 5 procesos por uso de CPU:"
@@ -17,36 +49,43 @@ function Mostrar-ProcesosCPU {
     }
 }
 
+# Función 2: Muestra información sobre los discos conectados al sistema, incluyendo el tamaño total y el espacio libre de cada uno
 
 function Mostrar-Discos {
     Write-Host "`nDiscos conectados y espacio disponible (en bytes):"
     Get-PSDrive -PSProvider FileSystem | ForEach-Object {
         [PSCustomObject]@{
             'Unidad'       = $_.Name
-            'Tamano total' = $_.Used + $_.Free
+            'Tamaño total' = $_.Used + $_.Free
             'Espacio libre'= $_.Free
         }
     } | Format-Table -AutoSize
 }
 
+# Función 3: Busca el archivo más grande dentro de una unidad especificada por el usuario
+
 function Mostrar-ArchivoMasGrande {
-    $unidad = Read-Host "Ingrese la letra de la unidad (por ejemplo C:\ o D:\)"
+    $letraUnidad = Read-Host "Ingrese la letra de la unidad (Ejemplo: C o D)"
+    $unidad = "$letraUnidad`:\"
+
     if (Test-Path $unidad) {
-        Write-Host "`nBuscando el archivo mas grande en $unidad ..."
+        Write-Host "`nBuscando el archivo más grande en $unidad ..."
         $archivo = Get-ChildItem -Path $unidad -Recurse -File -ErrorAction SilentlyContinue |
                    Sort-Object Length -Descending |
                    Select-Object -First 1 FullName, Length
         if ($archivo) {
-            Write-Host "Archivo mas grande encontrado:"
+            Write-Host "Archivo más grande encontrado:"
             Write-Host "Ruta: $($archivo.FullName)"
-            Write-Host "Tamano (bytes): $($archivo.Length)"
+            Write-Host "Tamaño (bytes): $($archivo.Length)"
         } else {
             Write-Host "No se encontraron archivos en la unidad especificada."
         }
     } else {
-        Write-Host "Ruta no valida. Intente nuevamente."
+        Write-Host "Unidad no válida. Intente nuevamente."
     }
 }
+
+# Función 4: Muestra información sobre la memoria física libre, el uso del swap y el procentaje de uso del swap
 
 function Mostrar-MemoriaYSwap {
     Write-Host "`nInformacion de memoria y uso de swap:"
@@ -61,17 +100,30 @@ function Mostrar-MemoriaYSwap {
     Write-Host "Porcentaje de swap usado: $porcentajeSwap %"
 }
 
+# Función 5: Muestra el número de conexiones de red activas con estado "ESTABLISHED"
+
 function Mostrar-ConexionesActivas {
     Write-Host "`nConexiones de red activas (ESTABLISHED):"
     $establecidas = (Get-NetTCPConnection | Where-Object { $_.State -eq "Established" }).Count
     Write-Host "Numero de conexiones ESTABLISHED: $establecidas"
 }
 
-# Programa principal
+# Llamado a las distintas funciones según el número especificado por el usuario
+
+switch ($Opcion) {
+    "1" { Mostrar-ProcesosCPU; return }
+    "2" { Mostrar-Discos; return }
+    "3" { Mostrar-ArchivoMasGrande; return }
+    "4" { Mostrar-MemoriaYSwap; return }
+    "5" { Mostrar-ConexionesActivas; return }
+}
+
+# Menú iterativo presentado cuando no se especifica el parámetro -Opcion al ejecutar el script
+
 do {
     Mostrar-Menu
-    $opcion = Read-Host "Seleccione una opcion"
-    switch ($opcion) {
+    $entrada = Read-Host "Seleccione una opcion"
+    switch ($entrada) {
         "1" { Mostrar-ProcesosCPU }
         "2" { Mostrar-Discos }
         "3" { Mostrar-ArchivoMasGrande }
