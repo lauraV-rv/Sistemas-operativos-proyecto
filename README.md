@@ -30,3 +30,27 @@ Dentro de la carpeta de su sistema correspondiente, se encuentran:
 
 - `monitoreo.sh` — Script en Bash para sistemas Linux.
 - `monitoreo.ps1` — Script en PowerShell para sistemas Windows.
+
+## Herramientas y comandos utilizados
+
+Algunas de las herramientas y comandos utilizados en el desarrollo de ambos scripts son:
+
+### Bash
+
+- `ps` — Para listar los procesos y su uso de CPU.
+- `awk` — Para filtrar y procesar columnas de texto.
+- `df` — Para mostrar el uso del sistema de archivos.
+- `find` — Para localizar archivos y calcular tamaños.
+- `du` — Para medir el tamaño de archivos.
+- `free` — Para obtener información de memoria RAM y swap.
+- `netstat` — Para listar conexiones de red.
+- `sort`, `head`, `cut`, `xargs` — Comandos auxiliares de procesamiento de texto.
+
+### PowerShell
+
+- `Get-Process` — Para listar procesos y uso de CPU.
+- `Get-PSDrive` y `Get-Volume` — Para mostrar discos y su espacio libre.
+- `Get-ChildItem` y `Measure-Object` — Para encontrar archivos y medir tamaños.
+- `Get-CimInstance` con la clase `Win32_OperatingSystem` — Para obtener uso de memoria y swap.
+- `Get-NetTCPConnection` — Para ver conexiones de red activas.
+- `Sort-Object`, `Select-Object`, `Where-Object` — Comandos auxiliares de procesamiento de datos.
