@@ -20,6 +20,11 @@ Muestra el menú interactivo.
 Ejecuta directamente la opción 3 (archivo más grande en un disco especificado).
 #>
 
+Write-Host "==================="
+Write-Host " MONITOREO DATA CENTER"
+Write-Host ("Fecha/Hora: " + (Get-Date))
+Write-Host "=================="
+
 [CmdletBinding()]
 param (
     [ValidateSet('1','2','3','4','5')]
