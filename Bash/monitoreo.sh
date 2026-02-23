@@ -6,6 +6,14 @@
 
 # Sistemas Operativos
 
+echo "============================"
+echo " MONITOREO DATA CENTER "
+echo " Fecha/Hora: $(date)"
+echo "============================"
+
+#"Fecha / Hora: $(date)"
+#============================
+
 # HERRAMIENTA DE MONITOREO DE DATA CENTERS
 
 # Función 1: Mostrar los 5 procesos que más CPU consumen
